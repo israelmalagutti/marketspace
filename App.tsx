@@ -1,6 +1,8 @@
-import { StatusBar, Text } from "react-native";
+import { StatusBar } from "react-native";
 
 import { THEME } from "./src/theme";
+
+import { Routes } from "@routes/index";
 
 import { Loading } from "@components/index";
 import { NativeBaseProvider } from "native-base";
@@ -19,7 +21,7 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={THEME}>
-      {fontsLoaded ? <Text>Hello World!</Text> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
 
       <StatusBar
         translucent
