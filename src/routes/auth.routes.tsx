@@ -25,7 +25,12 @@ export function AuthRoutes() {
         navigationBarColor: THEME.colors.gray[600],
       }}
     >
-      <Screen name="signIn" component={SignIn} />
+      <Screen
+        name="signIn"
+        component={SignIn}
+        options={{ navigationBarColor: THEME.colors.white }}
+      />
+
       <Screen name="signUp" component={SignUp} />
     </Navigator>
   );

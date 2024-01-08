@@ -1,11 +1,9 @@
-import { StatusBar } from "react-native";
-
 import { THEME } from "./src/theme";
 
 import { Routes } from "@routes/index";
 
 import { Loading } from "@components/index";
-import { NativeBaseProvider } from "native-base";
+import { NativeBaseProvider, StatusBar } from "native-base";
 
 import {
   useFonts,
