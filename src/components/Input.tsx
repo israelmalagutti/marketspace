@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { Input as NBInput, IInputProps, Box, FormControl } from "native-base";
-import { Eye } from "phosphor-react-native";
+import { Eye, EyeSlash } from "phosphor-react-native";
 import { TouchableOpacity } from "react-native";
 
 type Props = IInputProps & {
@@ -62,9 +62,11 @@ export function Input({ errorMessage, isInvalid, secure, ...rest }: Props) {
           onBlur={handleBlur}
         />
 
-        <TouchableOpacity activeOpacity={0.7} onPress={toggleVisibility}>
-          <Eye size={20} />
-        </TouchableOpacity>
+        {secure && (
+          <TouchableOpacity activeOpacity={0.7} onPress={toggleVisibility}>
+            {isSecure ? <Eye size={20} /> : <EyeSlash size={20} />}
+          </TouchableOpacity>
+        )}
       </Box>
 
       <FormControl.ErrorMessage _text={{ color: "red.500" }}>
