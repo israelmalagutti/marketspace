@@ -1,13 +1,15 @@
-import { Text, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { StatusBar, Text } from "react-native";
+
+import { THEME } from "./src/theme";
+
+import { Loading } from "@components/index";
+import { NativeBaseProvider } from "native-base";
+
 import {
   useFonts,
   Karla_400Regular,
   Karla_700Bold,
 } from "@expo-google-fonts/karla";
-
-import { NativeBaseProvider } from "native-base";
-import { THEME } from "src/theme";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -17,10 +19,13 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={THEME}>
-      <View style={{ flex: 1 }}>
-        {fontsLoaded ? <Text>Hello World!</Text> : <Text>Loading...</Text>}
-        <StatusBar style="auto" />
-      </View>
+      {fontsLoaded ? <Text>Hello World!</Text> : <Loading />}
+
+      <StatusBar
+        translucent
+        backgroundColor="#FFFFFF"
+        barStyle="dark-content"
+      />
     </NativeBaseProvider>
   );
 }
