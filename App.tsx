@@ -25,7 +25,7 @@ export default function App() {
 
       <StatusBar
         translucent
-        backgroundColor="#FFFFFF"
+        backgroundColor={THEME.colors.gray[600]}
         barStyle="dark-content"
       />
     </NativeBaseProvider>

@@ -3,6 +3,8 @@ import {
   createNativeStackNavigator,
 } from "@react-navigation/native-stack";
 
+import { THEME } from "../theme";
+
 import { SignIn } from "@screens/SignIn";
 import { SignUp } from "@screens/SignUp";
 
@@ -18,7 +20,10 @@ const { Navigator, Screen } = createNativeStackNavigator<AuthRoutes>();
 export function AuthRoutes() {
   return (
     <Navigator
-      screenOptions={{ headerShown: false, navigationBarColor: "#FFFFFF" }}
+      screenOptions={{
+        headerShown: false,
+        navigationBarColor: THEME.colors.gray[600],
+      }}
     >
       <Screen name="signIn" component={SignIn} />
       <Screen name="signUp" component={SignUp} />
