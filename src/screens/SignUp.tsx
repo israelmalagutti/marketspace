@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
-import { Button, Input } from "@components/index";
+import { Button, Input, UserPhoto } from "@components/index";
 import { Center, ScrollView, Text, VStack } from "native-base";
 
 import LogoIcon from "@assets/logoIcon.svg";
@@ -18,8 +18,8 @@ export function SignUp() {
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack flex={1} justifyContent="space-between" pt={5} pb={16}>
-        <VStack>
+      <VStack flex={1} pt={5} pb={16}>
+        <VStack mb={12}>
           <Center pb={3}>
             <LogoIcon width={60} />
           </Center>
@@ -49,6 +49,10 @@ export function SignUp() {
 
         <VStack px={12} space={6}>
           <VStack space={4}>
+            <Center>
+              <UserPhoto size={88} />
+            </Center>
+
             <Input placeholder="Nome" />
             <Input placeholder="Email" />
             <Input placeholder="Telefone" />
@@ -61,6 +65,7 @@ export function SignUp() {
             textColor="gray.700"
             label="Criar"
             onPress={() => {}}
+            mb={12}
           />
         </VStack>
 
