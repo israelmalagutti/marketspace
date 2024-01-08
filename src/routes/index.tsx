@@ -11,7 +11,7 @@ export function Routes() {
   theme.colors.background = colors.gray[600];
 
   return (
-    <Box flex={1}>
+    <Box flex={1} pt={6} pb={6}>
       <NavigationContainer theme={theme}>
         <AuthRoutes />
       </NavigationContainer>
