@@ -28,13 +28,10 @@ export function Input({ errorMessage, isInvalid, secure, ...rest }: Props) {
   };
 
   const getBorderColor = useCallback(() => {
-    const defaultColor = "transparent";
-    const invalidColor = invalid && "red.500";
-    const activeColor = active && "blue.100";
+    if (invalid) return "red.500";
+    if (active) return "blue.100";
 
-    const color = (invalidColor ?? activeColor) || defaultColor;
-
-    return color;
+    return "transparent";
   }, [active, invalid]);
 
   return (
