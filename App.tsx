@@ -6,6 +6,9 @@ import {
   Karla_700Bold,
 } from "@expo-google-fonts/karla";
 
+import { NativeBaseProvider } from "native-base";
+import { THEME } from "src/theme";
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Karla_400Regular,
@@ -13,9 +16,11 @@ export default function App() {
   });
 
   return (
-    <View style={{ flex: 1 }}>
-      {fontsLoaded ? <Text>Hello World!</Text> : <Text>Loading...</Text>}
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider theme={THEME}>
+      <View style={{ flex: 1 }}>
+        {fontsLoaded ? <Text>Hello World!</Text> : <Text>Loading...</Text>}
+        <StatusBar style="auto" />
+      </View>
+    </NativeBaseProvider>
   );
 }
