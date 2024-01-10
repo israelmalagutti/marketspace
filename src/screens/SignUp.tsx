@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
@@ -5,8 +7,15 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+
+import { api } from "@services/api";
+
+import { AppError } from "@utils/AppError";
+
 import { Button, Input, UserPhoto } from "@components/index";
-import { Center, ScrollView, Text, VStack } from "native-base";
+import { Center, ScrollView, Text, VStack, useToast } from "native-base";
 
 import LogoIcon from "@assets/logoIcon.svg";
 
@@ -28,23 +37,80 @@ const signUpSchema = z.object({
   confirm_password: z.string({ required_error: "This field is required." }),
 });
 
+const PHOTO_SIZE = 88;
+
 export function SignUp() {
+  const [avatar, setAvatar] = useState<string | undefined>(undefined);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+
+  const Toast = useToast();
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
   const { control, formState, handleSubmit } = useForm<FormData>({
     resolver: zodResolver(signUpSchema),
   });
 
-  const submitSignUp = async (formData: FormData) => {
+  const handleSelectedAvatar = async () => {
+    setAvatarLoading(true);
+
     try {
-      console.log({ formData });
+      const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      });
+
+      if (selectedPhoto.canceled) return;
+
+      if (selectedPhoto.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(
+          selectedPhoto.assets[0].uri,
+          { size: true }
+        );
+
+        if (photoInfo.exists && photoInfo.size / 1024 / 1024 > 5)
+          throw new AppError("A imagem deve ser menor do que 5MB");
+
+        setAvatar(selectedPhoto.assets[0].uri);
+      }
     } catch (error) {
-      console.error(error);
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Algo deu errado, tente novamente mais tarde.";
+
+      Toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.600",
+      });
+    } finally {
+      setAvatarLoading(false);
+    }
+  };
+
+  const submitSignUp = async (formData: FormData) => {
+    console.log({ avatar });
+    try {
+      await api.post("/users", { avatar, ...formData });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Desculpe, não foi possível contatar nossos servidores. Tente novamente mais tarde.";
+
+      Toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.600",
+      });
     }
   };
 
   const handleSignIn = () => {
-    navigation.navigate("signIn");
+    navigation.navigate("signUp");
   };
 
   return (
@@ -84,7 +150,19 @@ export function SignUp() {
         <VStack px={12} space={6}>
           <VStack space={4}>
             <Center>
-              <UserPhoto size={88} />
+              <UserPhoto
+                size={PHOTO_SIZE}
+                isEditable
+                isLoading={avatarLoading}
+                onPress={handleSelectedAvatar}
+                source={
+                  avatar
+                    ? {
+                        uri: avatar,
+                      }
+                    : undefined
+                }
+              />
             </Center>
 
             <Controller
