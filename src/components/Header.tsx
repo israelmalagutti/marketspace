@@ -49,7 +49,7 @@ export function Header() {
           </Text>
 
           <Text color="gray.100" fontFamily="heading" fontSize="md">
-            {getUserName() || "Ïsrael"}!
+            {getUserName() ?? "Ïsrael"}!
           </Text>
         </VStack>
       </HStack>
