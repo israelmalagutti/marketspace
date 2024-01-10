@@ -1,4 +1,4 @@
-import { Button as NBButton, IButtonProps, Text } from "native-base";
+import { Button as NBButton, IButtonProps, Text, HStack } from "native-base";
 
 type ButtonProps = IButtonProps & {
   label: string;
@@ -13,6 +13,7 @@ export function Button({
   bgColor = "gray.500",
   textColor = "gray.200",
 
+  children,
   ...rest
 }: ButtonProps) {
   return (
@@ -23,14 +24,18 @@ export function Button({
       p={3}
       borderRadius={6}
     >
-      <Text
-        textAlign="center"
-        color={textColor}
-        fontFamily="heading"
-        fontSize="sm"
-      >
-        {label}
-      </Text>
+      <HStack alignItems="center" space={2}>
+        {children}
+
+        <Text
+          textAlign="center"
+          color={textColor}
+          fontFamily="heading"
+          fontSize="sm"
+        >
+          {label}
+        </Text>
+      </HStack>
     </NBButton>
   );
 }
