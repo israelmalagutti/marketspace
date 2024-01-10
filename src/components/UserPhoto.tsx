@@ -1,15 +1,66 @@
-import { Center, IImageProps, Image, View, useTheme } from "native-base";
+import {
+  Center,
+  IImageProps,
+  Image,
+  View,
+  useTheme,
+  Button,
+  Skeleton,
+} from "native-base";
 import { PencilSimpleLine, User } from "phosphor-react-native";
 
 type ImageProps = IImageProps & {
   size: number;
+
+  isEditable?: boolean;
+  isLoading: boolean;
+
+  onPress: () => void;
 };
 
-export function UserPhoto({ size, source, ...rest }: ImageProps) {
+export function UserPhoto({
+  size,
+  source,
+
+  isEditable = false,
+  isLoading,
+
+  onPress,
+
+  ...rest
+}: ImageProps) {
   const { colors } = useTheme();
 
+  if (isLoading)
+    return (
+      <View>
+        <Skeleton
+          w={size}
+          h={size}
+          rounded="full"
+          startColor="gray.400"
+          endColor="gray.500"
+          borderWidth={3}
+          borderColor="blue.100"
+        />
+
+        {isEditable && (
+          <View
+            position="absolute"
+            right={-8}
+            bottom={0}
+            p={3}
+            bgColor="blue.100"
+            rounded="full"
+          >
+            <PencilSimpleLine color="white" size={16} />
+          </View>
+        )}
+      </View>
+    );
+
   return (
-    <View position="relative">
+    <Button onPress={onPress} position="relative" bgColor="transparent">
       {source ? (
         <Image
           {...rest}
@@ -18,6 +69,8 @@ export function UserPhoto({ size, source, ...rest }: ImageProps) {
           w={size}
           h={size}
           rounded="full"
+          borderWidth={3}
+          borderColor="blue.100"
         />
       ) : (
         <Center
@@ -32,16 +85,18 @@ export function UserPhoto({ size, source, ...rest }: ImageProps) {
         </Center>
       )}
 
-      <View
-        position="absolute"
-        right={-8}
-        bottom={0}
-        p={3}
-        bgColor="blue.100"
-        rounded="full"
-      >
-        <PencilSimpleLine color="white" size={16} />
-      </View>
-    </View>
+      {isEditable && (
+        <View
+          position="absolute"
+          right={-8}
+          bottom={0}
+          p={3}
+          bgColor="blue.100"
+          rounded="full"
+        >
+          <PencilSimpleLine color="white" size={16} />
+        </View>
+      )}
+    </Button>
   );
 }
