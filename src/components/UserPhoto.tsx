@@ -15,7 +15,7 @@ type ImageProps = IImageProps & {
   isEditable?: boolean;
   isLoading: boolean;
 
-  onPress: () => void;
+  onPress?: () => void;
 };
 
 export function UserPhoto({
@@ -60,7 +60,7 @@ export function UserPhoto({
     );
 
   return (
-    <Button onPress={onPress} position="relative" bgColor="transparent">
+    <Button onPress={onPress} position="relative" bgColor="transparent" p={0}>
       {source ? (
         <Image
           {...rest}
@@ -81,7 +81,7 @@ export function UserPhoto({
           borderWidth={3}
           borderColor="blue.100"
         >
-          <User color={colors.gray[400]} weight="bold" size={48} />
+          <User color={colors.gray[400]} weight="bold" size={(3 * size) / 2} />
         </Center>
       )}
 

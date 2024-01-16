@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
-import { HStack, Text, useTheme, View, VStack } from "native-base";
+import { HStack, Text, useTheme, VStack } from "native-base";
 
 import { ArrowRight, Tag } from "phosphor-react-native";
 
@@ -34,7 +34,7 @@ export function MyAdsCard({ numberOfAds }: MyAdsCardProps) {
 
         <VStack>
           <Text color="gray.200" fontFamily="heading" fontSize="lg">
-            {numberOfAds || 4}
+            {numberOfAds}
           </Text>
           <Text color="gray.200" fontFamily="body" fontSize="xs">
             anúncios ativos
