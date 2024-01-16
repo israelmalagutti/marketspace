@@ -8,9 +8,7 @@ import { ProductCondition, ProductDTO } from "@dtos/ProductDTO";
 import { UserPhoto } from "./UserPhoto";
 import { View, Text, Image, VStack, HStack } from "native-base";
 
-type ProductCardProps = Partial<ProductDTO> & {
-  marginRight: number;
-};
+type ProductCardProps = Partial<ProductDTO> & {};
 
 export function ProductCard({
   id,
@@ -21,8 +19,6 @@ export function ProductCard({
   isNew,
 
   thumb,
-
-  marginRight,
 }: ProductCardProps) {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
@@ -42,8 +38,9 @@ export function ProductCard({
   };
 
   return (
-    <VStack space={1} marginRight={marginRight}>
+    <VStack space={1}>
       <TouchableOpacity
+        activeOpacity={0.75}
         onPress={handleProductScreen}
         style={{ position: "relative" }}
       >
@@ -67,10 +64,17 @@ export function ProductCard({
           <View
             py={0.5}
             px={2}
+            alignItems="center"
+            justifyContent="center"
             bgColor={getProductCondition() === "new" ? "blue.500" : "gray.300"}
             rounded="full"
           >
-            <Text color="white" fontFamily="heading" fontSize={10}>
+            <Text
+              textAlign="center"
+              color="white"
+              fontFamily="heading"
+              fontSize={10}
+            >
               {getProductCondition().toUpperCase()}
             </Text>
           </View>
@@ -78,11 +82,16 @@ export function ProductCard({
       </TouchableOpacity>
 
       <VStack>
-        <Text color="gray.200" fontFamily="body" fontSize="sm">
+        <Text
+          marginBottom={-1}
+          color="gray.200"
+          fontFamily="body"
+          fontSize="sm"
+        >
           {name ?? "Product Name"}
         </Text>
 
-        <HStack alignItems="baseline" space={1}>
+        <HStack alignItems="baseline" space={0.5}>
           <Text color="gray.100" fontFamily="heading" fontSize="xs">
             R$
           </Text>
