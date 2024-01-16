@@ -182,7 +182,6 @@ export function Home() {
           Compre produtos variados
         </Text>
 
-        {/* SearchBar */}
         <SearchBar />
       </VStack>
 
