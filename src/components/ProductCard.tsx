@@ -50,6 +50,7 @@ export function ProductCard({
           rounded="md"
           style={{ aspectRatio: 1.5 / 1 }}
           src={"https://github.com/israelmalagutti.png"}
+          alt={"Image of the product"}
         />
 
         <HStack

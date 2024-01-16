@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import * as NavigationBar from "expo-navigation-bar";
+
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 
 import { AuthRoutes } from "./auth.routes";
@@ -14,10 +17,19 @@ export function Routes() {
   const theme = DefaultTheme;
   theme.colors.background = colors.gray[600];
 
+  const changeNavigationBarColor = async () => {
+    await NavigationBar.setBackgroundColorAsync(colors.gray[600]);
+    await NavigationBar.setButtonStyleAsync("dark");
+  };
+
+  useEffect(() => {
+    if (user) changeNavigationBarColor();
+  }, []);
+
   return (
-    <Box flex={1} pt={6} pb={user ? 0 : 6}>
+    <Box flex={1} pt={6} pb={!user ? 0 : 6}>
       <NavigationContainer theme={theme}>
-        <AppRoutes />
+        {user ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </Box>
   );

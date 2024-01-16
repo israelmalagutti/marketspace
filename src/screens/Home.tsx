@@ -166,7 +166,7 @@ export function Home() {
   }, []);
 
   return (
-    <VStack space={8}>
+    <VStack flex={1} space={8}>
       <Header />
 
       <VStack px={6} space={3}>
@@ -191,10 +191,11 @@ export function Home() {
         alwaysBounceHorizontal={false}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 1 }}
         contentContainerStyle={{
           flexGrow: 1,
           paddingHorizontal: 24,
-          paddingBottom: 400,
+          paddingBottom: 48,
           rowGap: 24,
         }}
         columnWrapperStyle={{ gap: 24 }}
