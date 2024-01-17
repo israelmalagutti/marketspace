@@ -23,7 +23,7 @@ export function ProductCard({
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const handleProductScreen = () => {
-    navigation.navigate("home");
+    navigation.navigate("product");
   };
 
   const getProductCondition = (): ProductCondition => {
