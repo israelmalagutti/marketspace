@@ -7,11 +7,16 @@ import {
 import { useTheme } from "native-base";
 
 import { Home } from "@screens/Home";
+import { Product } from "@screens/Product";
+import { MyAds } from "@screens/MyAds";
+import { MyProduct } from "@screens/MyProduct";
 
 import { House, SignOut, Tag } from "phosphor-react-native";
 
 type AppRoutes = {
   home: undefined;
+  product: undefined;
+  myProduct: undefined;
 
   myAds: undefined;
   createAd: undefined;
@@ -57,12 +62,30 @@ export function AppRoutes() {
       />
 
       <Screen
+        name="product"
+        component={Product}
+        options={{
+          tabBarStyle: { display: "none" },
+          tabBarButton: () => undefined,
+        }}
+      />
+
+      <Screen
         name="myAds"
-        component={Home}
+        component={MyAds}
         options={{
           tabBarIcon: ({ color }) => (
             <Tag color={color} size={ICON_SIZE} weight="bold" />
           ),
+        }}
+      />
+
+      <Screen
+        name="myProduct"
+        component={MyProduct}
+        options={{
+          tabBarStyle: { display: "none" },
+          tabBarButton: () => undefined,
         }}
       />
 
