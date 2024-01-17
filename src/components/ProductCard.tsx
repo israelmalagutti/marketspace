@@ -8,7 +8,9 @@ import { ProductCondition, ProductDTO } from "@dtos/ProductDTO";
 import { UserPhoto } from "./UserPhoto";
 import { View, Text, Image, VStack, HStack } from "native-base";
 
-type ProductCardProps = Partial<ProductDTO> & {};
+type ProductCardProps = Partial<ProductDTO> & {
+  showOwner?: boolean;
+};
 
 export function ProductCard({
   id,
@@ -19,6 +21,8 @@ export function ProductCard({
   isNew,
 
   thumb,
+
+  showOwner = true,
 }: ProductCardProps) {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
@@ -46,7 +50,7 @@ export function ProductCard({
       >
         <Image
           resizeMode="cover"
-          h={112}
+          h={113}
           rounded="md"
           style={{ aspectRatio: 1.5 / 1 }}
           src={"https://github.com/israelmalagutti.png"}
@@ -60,7 +64,7 @@ export function ProductCard({
           justifyContent="space-between"
           p={1}
         >
-          <UserPhoto isLoading={!thumb} size={6} />
+          {showOwner ? <UserPhoto isLoading={!thumb} size={6} /> : <View />}
 
           <View
             py={0.5}
@@ -98,7 +102,7 @@ export function ProductCard({
           </Text>
 
           <Text color="gray.100" fontFamily="heading" fontSize="md">
-            {price ?? "Product Price"}
+            {Number(price).toFixed(2) ?? "Product Price"}
           </Text>
         </HStack>
       </VStack>

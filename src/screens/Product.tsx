@@ -230,7 +230,7 @@ export function Product() {
       <HStack
         alignItems="center"
         justifyContent="space-between"
-        pt={5}
+        py={5}
         px={6}
         bgColor="white"
       >
