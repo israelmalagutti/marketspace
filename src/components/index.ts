@@ -7,4 +7,5 @@ export * from "./Loading";
 export * from "./MyAdsCard";
 export * from "./ProductCard";
 export * from "./SearchBar";
+export * from "./Switch";
 export * from "./UserPhoto";
