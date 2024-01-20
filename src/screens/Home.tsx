@@ -143,8 +143,6 @@ export function Home() {
         },
       });
 
-      console.log({ data });
-
       if (data) setProducts(data);
     } catch (error) {
       const isAppError = error instanceof AppError;
