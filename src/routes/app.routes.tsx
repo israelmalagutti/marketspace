@@ -10,8 +10,10 @@ import { Home } from "@screens/Home";
 import { Product } from "@screens/Product";
 import { MyAds } from "@screens/MyAds";
 import { MyProduct } from "@screens/MyProduct";
+import { CreateAd } from "@screens/CreateAd";
 
 import { House, SignOut, Tag } from "phosphor-react-native";
+import { ProductPreview } from "@screens/ProductPreview";
 
 type AppRoutes = {
   home: undefined;
@@ -20,6 +22,7 @@ type AppRoutes = {
 
   myAds: undefined;
   createAd: undefined;
+  productPreview: undefined;
 
   signOut: undefined;
 };
@@ -55,6 +58,7 @@ export function AppRoutes() {
         name="home"
         component={Home}
         options={{
+          tabBarHideOnKeyboard: true,
           tabBarIcon: ({ color }) => (
             <House color={color} size={ICON_SIZE} weight="bold" />
           ),
@@ -91,8 +95,22 @@ export function AppRoutes() {
 
       <Screen
         name="createAd"
-        component={Home}
+        component={CreateAd}
         options={{
+          tabBarStyle: {
+            display: "none",
+          },
+          tabBarButton: () => undefined,
+        }}
+      />
+
+      <Screen
+        name="productPreview"
+        component={ProductPreview}
+        options={{
+          tabBarStyle: {
+            display: "none",
+          },
           tabBarButton: () => undefined,
         }}
       />

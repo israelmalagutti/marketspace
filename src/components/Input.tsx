@@ -3,13 +3,19 @@ import { Input as NBInput, IInputProps, Box, FormControl } from "native-base";
 import { Eye, EyeSlash } from "phosphor-react-native";
 import { TouchableOpacity } from "react-native";
 
-type Props = IInputProps & {
+type InputProps = IInputProps & {
   errorMessage?: string | null;
 
   secure?: boolean;
 };
 
-export function Input({ errorMessage, isInvalid, secure, ...rest }: Props) {
+export function Input({
+  errorMessage,
+  isInvalid,
+  secure,
+
+  ...rest
+}: InputProps) {
   const [active, setActive] = useState(false);
   const [isSecure, setIsSecure] = useState(true);
 

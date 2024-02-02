@@ -3,15 +3,18 @@ import { TouchableOpacity } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Button, Checkbox, Input, Switch } from "@components/index";
 import { Text, VStack, ScrollView, useTheme, HStack, View } from "native-base";
 
 import { ArrowLeft, Plus } from "phosphor-react-native";
 
-import { Controller, useForm } from "react-hook-form";
-
 import { changeNavigationBarColor } from "@utils/index";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
+import { ProductDTO } from "@dtos/ProductDTO";
 
 const PaymentMethods = [
   "Boleto",
@@ -21,6 +24,18 @@ const PaymentMethods = [
   "Depósito Bancário",
 ];
 
+type FormData = {
+  title: string;
+  description: string;
+  price: string;
+};
+
+const newProductSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  price: z.string(),
+});
+
 export function CreateAd() {
   const [condition, setCondition] = useState<"new" | "used">("new");
   const [tradePreference, setTradePreference] = useState(false);
@@ -29,7 +44,17 @@ export function CreateAd() {
 
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm({
+    resolver: zodResolver(newProductSchema),
+  });
+
+  const handleAdCreation = async () => {
+    try {
+      navigation.navigate("productPreview");
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   useLayoutEffect(() => {
     changeNavigationBarColor();
@@ -106,14 +131,30 @@ export function CreateAd() {
             <Controller
               control={control}
               name="title"
-              render={() => <Input placeholder="Títlulo do anúncio" />}
+              render={({ field }) => (
+                <Input
+                  placeholder="Títlulo do anúncio"
+                  value={field.value}
+                  onChangeText={field.onChange}
+                  // errorMessage={}
+                />
+              )}
             />
 
-            {/* Transform into a TextArea */}
             <Controller
               control={control}
               name="description"
-              render={() => <Input placeholder="Descrição do produto" />}
+              render={({ field }) => (
+                <Input
+                  multiline
+                  numberOfLines={6}
+                  textAlignVertical="top"
+                  placeholder="Descrição do produto"
+                  value={field.value}
+                  onChangeText={field.onChange}
+                  // errorMessage={}
+                />
+              )}
             />
 
             <HStack space={5}>
@@ -202,6 +243,7 @@ export function CreateAd() {
           bgColor="black"
           textColor="gray.700"
           label="Avançar"
+          onPress={() => navigation.navigate("productPreview")}
         />
       </HStack>
     </VStack>
