@@ -1,14 +1,17 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import { api } from "@services/api";
 
 import { UserDTO } from "@dtos/index";
-import { saveUser } from "@storage/storageUser";
+import { getUser, saveUser } from "@storage/storageUser";
+import { saveAuthToken } from "@storage/storageAuthToken";
 
 type AuthContextType = {
   user: UserDTO;
 
   signIn: (email: string, password: string) => Promise<void>;
+
+  isLoadingStoredUser: boolean;
 };
 
 type AuthProviderType = {
@@ -22,23 +25,60 @@ export const AuthContext = createContext({
 export function AuthProvider({ children }: AuthProviderType) {
   const [user, setUser] = useState({} as UserDTO);
 
-  const signIn = async (email: string, password: string) => {
+  const [isLoadingStoredUser, setIsLoadingStoredUser] = useState(false);
+
+  const storageUser = async (userData: UserDTO, token: string) => {
     try {
-      const { data } = await api.post("/sessions", { email, password });
+      setIsLoadingStoredUser(true);
 
-      if (data.user && data.token) {
-        await saveUser(data.user);
-        api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
-
-        setUser(data.user);
-      }
+      await saveUser(userData);
+      await saveAuthToken(token);
     } catch (error) {
       throw error;
     }
   };
 
+  const updateUserAndToken = async (userData: UserDTO, token: string) => {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+    setUser(userData);
+  };
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data } = await api.post("/sessions", { email, password });
+
+      if (data.user && data.token) {
+        await storageUser(data.user, data.token);
+        updateUserAndToken(data.user, data.token);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingStoredUser(false);
+    }
+  };
+
+  const loadUserData = async () => {
+    try {
+      setIsLoadingStoredUser(true);
+
+      const loggedUser = await getUser();
+
+      if (loggedUser) setUser(loggedUser);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingStoredUser(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, signIn }}>
+    <AuthContext.Provider value={{ isLoadingStoredUser, user, signIn }}>
       {children}
     </AuthContext.Provider>
   );
