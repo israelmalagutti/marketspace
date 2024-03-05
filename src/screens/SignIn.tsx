@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
@@ -8,10 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
 import { Input, Button } from "@components/index";
-import { Box, Center, ScrollView, Text, VStack } from "native-base";
+import { Box, Center, ScrollView, Text, VStack, useToast } from "native-base";
 
 import Logo from "@assets/logo.svg";
 import LogoIcon from "@assets/logoIcon.svg";
+import { AppError } from "@utils/AppError";
+import { api } from "@services/api";
 
 type FormData = {
   email: string;
@@ -26,7 +29,11 @@ const signInSchema = z.object({
 });
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+
+  const Toast = useToast();
 
   const { signIn } = useAuth();
 
@@ -40,9 +47,22 @@ export function SignIn() {
 
   const submitSignIn = async ({ email, password }: FormData) => {
     try {
-      console.log({ email, password });
+      setIsLoading(true);
+
+      await signIn(email, password);
     } catch (error) {
-      console.error(error);
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Desculpe, não foi possível contatar nossos servidores. Tente novamente mais tarde.";
+
+      Toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,7 +87,7 @@ export function SignIn() {
           right={0}
           left={0}
           backgroundColor="gray.600"
-          borderRadius={24}
+          roundedBottom={24}
         />
 
         <VStack alignItems="center" space={5} py={18}>
@@ -125,6 +145,7 @@ export function SignIn() {
             bgColor="blue.100"
             textColor="gray.700"
             label="Entrar"
+            isLoading={isLoading}
             onPress={handleSubmit(submitSignIn)}
           />
         </VStack>
