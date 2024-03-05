@@ -3,7 +3,7 @@ import { UserDTO } from "@dtos/UserDTO";
 import { USER_STORAGE } from "./storageConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export async function saveUser(user: UserDTO) {
+async function saveUser(user: UserDTO) {
   try {
     await AsyncStorage.setItem(USER_STORAGE, JSON.stringify(user));
   } catch (error) {
@@ -11,7 +11,7 @@ export async function saveUser(user: UserDTO) {
   }
 }
 
-export async function getUser() {
+async function getUser() {
   try {
     const storedUser = await AsyncStorage.getItem(USER_STORAGE);
 
@@ -22,10 +22,12 @@ export async function getUser() {
   }
 }
 
-export async function removeUser() {
+async function removeUser() {
   try {
     await AsyncStorage.removeItem(USER_STORAGE);
   } catch (error) {
     throw error;
   }
 }
+
+export { getUser, removeUser, saveUser };
