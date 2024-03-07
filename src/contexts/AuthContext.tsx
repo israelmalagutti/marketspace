@@ -3,13 +3,14 @@ import { createContext, useEffect, useState } from "react";
 import { api } from "@services/api";
 
 import { UserDTO } from "@dtos/index";
-import { getUser, saveUser } from "@storage/storageUser";
-import { saveAuthToken } from "@storage/storageAuthToken";
+import { getUser, removeUser, saveUser } from "@storage/storageUser";
+import { removeAuthToken, saveAuthToken } from "@storage/storageAuthToken";
 
 type AuthContextType = {
   user: UserDTO;
 
   signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
 
   isLoadingStoredUser: boolean;
 };
@@ -59,6 +60,16 @@ export function AuthProvider({ children }: AuthProviderType) {
     }
   };
 
+  const signOut = async () => {
+    try {
+      await removeAuthToken();
+      await removeUser();
+      setUser({} as UserDTO);
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const loadUserData = async () => {
     try {
       setIsLoadingStoredUser(true);
@@ -78,7 +89,9 @@ export function AuthProvider({ children }: AuthProviderType) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoadingStoredUser, user, signIn }}>
+    <AuthContext.Provider
+      value={{ isLoadingStoredUser, user, signIn, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
