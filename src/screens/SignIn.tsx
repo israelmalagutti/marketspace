@@ -14,7 +14,6 @@ import { Box, Center, ScrollView, Text, VStack, useToast } from "native-base";
 import Logo from "@assets/logo.svg";
 import LogoIcon from "@assets/logoIcon.svg";
 import { AppError } from "@utils/AppError";
-import { api } from "@services/api";
 
 type FormData = {
   email: string;

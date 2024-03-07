@@ -1,10 +1,12 @@
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import {
   createBottomTabNavigator,
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
 
-import { useTheme } from "native-base";
+import { useAuth } from "@hooks/useAuth";
+
+import { Pressable, Modal, useTheme, Toast } from "native-base";
 
 import { Home } from "@screens/Home";
 import { Product } from "@screens/Product";
@@ -34,7 +36,20 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 const ICON_SIZE = 24;
 
 export function AppRoutes() {
+  const { signOut } = useAuth();
+
   const { colors, sizes } = useTheme();
+
+  const handleSignOut = async () => {
+    Alert.alert(
+      "Sair da conta?",
+      "Tem certeza que deseja encerrar sua sessão?",
+      [
+        { text: "CANCELAR", style: "cancel" },
+        { text: "SAIR", style: "destructive", onPress: signOut },
+      ]
+    );
+  };
 
   return (
     <Navigator
@@ -120,7 +135,13 @@ export function AppRoutes() {
         component={Home}
         options={{
           tabBarIcon: () => (
-            <SignOut color={colors.red[100]} size={ICON_SIZE} weight="bold" />
+            <Pressable
+              alignItems="center"
+              justifyContent="center"
+              onPress={handleSignOut}
+            >
+              <SignOut color={colors.red[100]} size={ICON_SIZE} weight="bold" />
+            </Pressable>
           ),
         }}
       />
