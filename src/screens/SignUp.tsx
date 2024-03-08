@@ -18,6 +18,13 @@ import { Button, Input, UserPhoto } from "@components/index";
 import { Center, ScrollView, Text, VStack, useToast } from "native-base";
 
 import LogoIcon from "@assets/logoIcon.svg";
+import { useAuth } from "@hooks/useAuth";
+
+type Avatar = {
+  name: string;
+  uri: string;
+  type: string;
+};
 
 type FormData = {
   name: string;
@@ -27,23 +34,30 @@ type FormData = {
   confirm_password: string;
 };
 
-const signUpSchema = z.object({
-  name: z.string({ required_error: "This field is required." }),
-  email: z
-    .string({ required_error: "This field is required." })
-    .email("Invalid email."),
-  telephone: z.string({ required_error: "This field is required." }),
-  password: z.string({ required_error: "This field is required." }),
-  confirm_password: z.string({ required_error: "This field is required." }),
-});
+const signUpSchema = z
+  .object({
+    name: z.string({ required_error: "This field is required." }),
+    email: z
+      .string({ required_error: "This field is required." })
+      .email("Invalid email."),
+    telephone: z.string({ required_error: "This field is required." }),
+    password: z.string({ required_error: "This field is required." }),
+    confirm_password: z.string({ required_error: "This field is required." }),
+  })
+  .refine(data => data.password === data.confirm_password, {
+    message: "The passwords must match.",
+    path: ["confirmPassword"],
+  });
 
 const PHOTO_SIZE = 88;
 
 export function SignUp() {
-  const [avatar, setAvatar] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [avatar, setAvatar] = useState<Avatar>({} as Avatar);
   const [avatarLoading, setAvatarLoading] = useState(false);
 
-  const Toast = useToast();
+  const { signIn } = useAuth();
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
@@ -51,29 +65,39 @@ export function SignUp() {
     resolver: zodResolver(signUpSchema),
   });
 
+  const Toast = useToast();
+
   const handleSelectedAvatar = async () => {
     setAvatarLoading(true);
 
     try {
       const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: false,
         quality: 1,
         aspect: [4, 4],
         allowsEditing: true,
       });
 
+      const { uri } = selectedPhoto.assets![0];
+
       if (selectedPhoto.canceled) return;
 
-      if (selectedPhoto.assets[0].uri) {
-        const photoInfo = await FileSystem.getInfoAsync(
-          selectedPhoto.assets[0].uri,
-          { size: true }
-        );
+      if (uri) {
+        const photoInfo = await FileSystem.getInfoAsync(uri, { size: true });
 
         if (photoInfo.exists && photoInfo.size / 1024 / 1024 > 5)
           throw new AppError("A imagem deve ser menor do que 5MB");
 
-        setAvatar(selectedPhoto.assets[0].uri);
+        const fileExtension = uri.split(".").pop();
+
+        const photoFile = {
+          name: `avatar.${fileExtension}`,
+          uri,
+          type: `${selectedPhoto.assets[0].type}/${fileExtension}`,
+        };
+
+        setAvatar(photoFile);
       }
     } catch (error) {
       const isAppError = error instanceof AppError;
@@ -91,11 +115,32 @@ export function SignUp() {
     }
   };
 
-  const submitSignUp = async (formData: FormData) => {
-    console.log({ avatar });
+  const submitSignUp = async ({
+    email,
+    name,
+    telephone,
+    password,
+  }: FormData) => {
     try {
-      await api.post("/users", { avatar, ...formData });
+      setIsLoading(true);
+
+      const formData = new FormData();
+      formData.append("avatar", avatar as any);
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("tel", telephone);
+      formData.append("password", password);
+
+      await api.post("/users", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      signIn(email, password);
     } catch (error) {
+      setIsLoading(false);
+
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
@@ -151,14 +196,14 @@ export function SignUp() {
           <VStack space={4}>
             <Center>
               <UserPhoto
-                size={PHOTO_SIZE}
+                size={24}
                 isEditable
                 isLoading={avatarLoading}
                 onPress={handleSelectedAvatar}
                 source={
-                  avatar
+                  avatar.uri
                     ? {
-                        uri: avatar,
+                        uri: avatar.uri,
                       }
                     : undefined
                 }
@@ -239,6 +284,7 @@ export function SignUp() {
 
           <Button
             label="Criar"
+            isLoading={isLoading}
             onPress={handleSubmit(submitSignUp)}
             bgColor="black"
             textColor="gray.700"
