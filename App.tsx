@@ -1,3 +1,5 @@
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 import { THEME } from "./src/theme";
 
 import { Routes } from "@routes/index";
@@ -20,14 +22,16 @@ export default function App() {
   });
 
   return (
-    <NativeBaseProvider theme={THEME}>
-      <AuthProvider>{fontsLoaded ? <Routes /> : <Loading />}</AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NativeBaseProvider theme={THEME}>
+        <AuthProvider>{fontsLoaded ? <Routes /> : <Loading />}</AuthProvider>
 
-      <StatusBar
-        translucent
-        backgroundColor={THEME.colors.gray[600]}
-        barStyle="dark-content"
-      />
-    </NativeBaseProvider>
+        <StatusBar
+          translucent
+          backgroundColor={THEME.colors.gray[600]}
+          barStyle="dark-content"
+        />
+      </NativeBaseProvider>
+    </GestureHandlerRootView>
   );
 }

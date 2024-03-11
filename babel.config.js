@@ -18,9 +18,11 @@ module.exports = function (api) {
             "@storage": "./src/storage",
             "@utils": "./src/utils",
             "@routes": "./src/routes",
+            "@theme": "./src/theme",
           },
         },
       ],
+      "react-native-reanimated/plugin",
     ],
   };
 };
